@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  - const headerString= title
+  - const contentString= signedIn?"歡迎 ! !  "+userName:"歡迎來到牌組管理器"
+
+  h1= headerString
+  p= contentString
+  -if(!signedIn)
+    a(href="/google-auth/sign-in/") 登入
+  -else
+    a(href="/google-auth/sign-out/") 登出
