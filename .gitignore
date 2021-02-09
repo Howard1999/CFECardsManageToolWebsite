@@ -1,2 +1,2 @@
 node_modules
-auth
+routes/account/google-oauth2/secret

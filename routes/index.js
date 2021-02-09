@@ -3,8 +3,8 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if(req.session.gmail&&req.session.userName){
-    const mail = req.session.gmail;
+  if(req.session.signedIn){
+    const mail = req.session.email;
     const name = req.session.userName;
     res.render('index', { title: '五行牌牌組管理器', signedIn: true, gmail:mail, userName:name});
   }

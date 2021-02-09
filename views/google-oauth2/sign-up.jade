@@ -1,0 +1,12 @@
+extends ../layout
+
+block content
+    h1 註冊
+    p 使用這個帳戶註冊
+    p Name: #{name}
+    p Email: #{gmail}
+
+    script(src='/javascripts/google-oauth2/sign-up.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')
+    button#signup_button 註冊
+    button#cancle_signup_button 取消
