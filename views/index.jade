@@ -7,6 +7,7 @@ block content
   h1= headerString
   p= contentString
   -if(!signedIn)
-    a(href="/account/google-oauth2/sign-in/") 登入
+    a(href="/account/sign-in/") 登入
+    a(href="/account/sign-up/") 註冊
   -else
     a(href="/account/sign-out/") 登出

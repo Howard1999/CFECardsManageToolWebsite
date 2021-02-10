@@ -6,12 +6,12 @@ window.onload = ()=>{
         console.log(123456);
         $.post("/account/google-oauth2/sign-up",{'signUp': true}, function(data, status){
             if(data['sign up']=='error')alert(data['err']);
-            window.location.replace("http://localhost:3000/account/google-oauth2/sign-in");
+            window.location.replace("/account/google-oauth2/sign-in");
         });
     };
     cancleSignUpButton.onclick = ()=>{
         $.post("/account/google-oauth2/sign-up",{'signUp': false}, function(data, status){
-            window.location.replace("http://localhost:3000/account/sign-up");
+            window.location.replace("/account/sign-up");
         });
     };  
 }
