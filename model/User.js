@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var User = new Schema({
-    account_type: {type: String, enum: ['gmail']},
+    account_type: {type: String, default:'gmail', enum: ['gmail']},
     name: {type: String,
         required: [true, 'User name is required.'],
         min: [1, 'User name at least 1 words.'] ,

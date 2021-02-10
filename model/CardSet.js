@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CardSet = new Schema({
+    owner: {type: Schema.Types.ObjectId, ref: 'User'},
     name: {type: String,
         required: [true, 'CardSet name is required.'],
         min: [3, 'CardSet name at least 3 words.'],

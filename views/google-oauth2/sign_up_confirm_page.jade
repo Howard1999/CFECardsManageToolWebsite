@@ -1,0 +1,7 @@
+extends ../layout
+
+block content
+    h1 #{title}
+    p #{name},您將使用#{email}註冊
+    a(href="/account/google-oauth2/sign-up?confirm=true") 確認
+    a(href="/account/google-oauth2/sign-up?confirm=false") 取消
