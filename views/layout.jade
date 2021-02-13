@@ -1,26 +1,61 @@
 doctype html
 html
   head
-    title=title
-    // load bootstrap css
+    // required meta
+    meta(charset="utf-8")
+    mate(name="viewport", content="width=device-width, initial-scale=1")
+    // bootstrap css
     link(rel="stylesheet"
     href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css',
     integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1",
     crossorigin="anonymous"
     )
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    // css
+    link(rel="stylesheet", href="/stylesheets/layout.css")
+    block load_css
+    // title
+    title=title
   body
     // load bootstrap js
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js",
     integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW",
     crossorigin="anonymous")
 
-    div#nav_bar
-      p TODO: nav_bar
+    // navigation bar
+    nav.navbar.navbar-expand-lg.navbar-light.rounded.sticky-top#navbar
+      div.container-fluid
+        a.navbar-brand(href="/")
+          img.navbar-icon(src="http://fakeimg.pl/50x50/00CED1/FFF/?text=temp+IMG")
+        button.navbar-toggler(type="button",data-bs-toggle="collapse",
+          data-bs-target="#navbarNavAltMarkup",
+          aria-controls="navbarNavAltMarkup",
+          aria-expanded="false",
+          aria-label="Toggle navigation")
+          span.navbar-toggler-icon
+        div.collapse.navbar-collapse#navbarNavAltMarkup
+          div.navbar-nav.col-10
+            a.nav-link.navbar-urls(href="/") 
+                p.fs-5.nav-text 首頁
+            a.nav-link.navbar-urls(href="/user/profile") 
+                p.fs-5.nav-text 使用者
+            a.nav-link.navbar-urls(href="/cardset/edit") 
+                p.fs-5.nav-text 編輯卡組
+            a.nav-link.navbar-urls(href="/#about") 
+                p.fs-5.nav-text 聯絡
+          -if(!signedIn)
+            div.navbar-nav.col-2.d-flex.justify-content-end#navbar_signin
+              a.nav-link.navbar-urls(href="/account/google-oauth2/sign-in-page")
+                p.fs-5.nav-text登入
+              a.nav-link.navbar-urls(href="/account/google-oauth2/sign-up-page")
+                p.fs-5.nav-text 註冊
+          -else
+            div.navbar-nav.col-2.d-flex.justify-content-end#navbar_signin
+              a.nav-link.navbar-urls(href="/account/google-oauth2/sign-out-page")
+                p.fs-5.nav-text 登出
+    // content
+    div.container-fluid#content
+        block content
 
-    div#content
-      block content
-
-    div#contact_info
-      p 作者: Howard-Su
-      p e-mail: suyihao1999@gmail.com
+    // copy right footer
+    div.container-fluid#footer
+      p.fs-6.text-break &copy; copyright by Howard-Su

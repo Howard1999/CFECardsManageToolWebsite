@@ -43,16 +43,19 @@ async function multiSignInPrevent(req, res, next) {
 }
 /* pages */
 authAPI.get('/sign-in-page', multiSignInPrevent, (req, res, next)=>{
+  var signedIn = req.session.signedIn==true;
   var url = getConnectionUrl(createConnection('sign-in'));
   var err = req.query.err;
-  res.render('google-oauth2/sign_in_page', {'title': '登入', 'auth_url': url, 'err': err});
+  res.render('account/google-oauth2/sign_in_page', {'title': '登入', 'signedIn': signedIn, 'auth_url': url, 'err': err});
 });
 authAPI.get('/sign-up-page', multiSignInPrevent, (req, res, next)=>{
+  var signedIn = req.session.signedIn==true;
   var url = getConnectionUrl(createConnection('sign-up-page/confirm'));
   var err = req.query.err;
-  res.render('google-oauth2/sign_up_page', {'title': '註冊', 'auth_url': url, 'err': err});
+  res.render('account/google-oauth2/sign_up_page', {'title': '註冊', 'signedIn': signedIn, 'auth_url': url, 'err': err});
 });
 authAPI.get('/sign-up-page/confirm', multiSignInPrevent, (req, res, next)=>{
+  var signedIn = req.session.signedIn==true;
   var code = req.query.code;
   const remoteIp = req.connection.remoteAddress;
   if(code===undefined){
@@ -63,8 +66,9 @@ authAPI.get('/sign-up-page/confirm', multiSignInPrevent, (req, res, next)=>{
       .then((data)=>{
         var gmail = data['email'];
         var userName = data['name'];
+        var avatarUrl = data['picture'];
         req.session.signUpConfig = {'name': userName,'email': gmail};
-        res.render("google-oauth2/sign_up_confirm_page", {'title': '註冊', 'name': userName, 'email': gmail});
+        res.render("account/google-oauth2/sign_up_confirm_page", {'title': '註冊', 'signedIn': signedIn, 'name': userName, 'email': gmail, 'avatar_url': avatarUrl});
       })
       .catch((err)=>{
         ServerLog.create({'recordBy': 'google-oauth2-sign-up',
@@ -76,7 +80,8 @@ authAPI.get('/sign-up-page/confirm', multiSignInPrevent, (req, res, next)=>{
   }
 });
 authAPI.get('/sign-out-page', (req, res, next)=>{
-  res.render('google-oauth2/sign_out_page', {'title': '登出'});
+  var signedIn = req.session.signedIn==true;
+  res.render('account/google-oauth2/sign_out_page', {'title': '登出',  'signedIn': signedIn});
 });
 /* apis */
 authAPI.get('/sign-in', multiSignInPrevent, (req, res, next)=>{

@@ -1,13 +1,30 @@
 extends layout
 
-block content
-  - const headerString= title
-  - const contentString= signedIn?"歡迎 ! !  "+userName:"歡迎來到牌組管理器"
+block load_css
+    link(rel="stylesheet", href="/stylesheets/index.css")
 
-  h1= headerString
-  p= contentString
-  -if(!signedIn)
-    a(href="/account/google-oauth2/sign-in-page/") 登入
-    a(href="/account/google-oauth2/sign-up-page/") 註冊
-  -else
-    a(href="/account/google-oauth2/sign-out-page") 登出
+block content
+    - const headerString= title
+    
+    // jumbotron
+    div.row
+        div.jumbotron
+            h1(style="color:#fff;")= headerString
+    // intro
+    div.row
+        div.col-12.col-lg-6
+            p.fs-2 Edit
+            img.img-fluid(src="http://fakeimg.pl/1027x768/AFA/FFF/?text=img+placeholder")
+        div.col-12.col-lg-6
+            p.fs-2 Manage
+            img.img-fluid(src="http://fakeimg.pl/1027x768/AFA/FFF/?text=img+placeholder")
+    // about
+    div.row.d-flex.justify-content-center.text-center#about
+        p.fs-2 About
+        div.card.col-4
+            div.card-body.row
+                h4.card-title Howard-Su
+                p.card-text 國立臺灣師範大學畢業生
+                p.card-text 信箱: suyihao1999@gmail.com
+                a.btn.btn-primary(href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=suyihao1999@gmial.com",target="_blank") contact
+

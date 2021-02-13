@@ -1,0 +1,13 @@
+
+.jumbotron{
+    padding: 2rem 1rem;
+    background: url("http://fakeimg.pl/1920x500/00CED1/FFF/?text=temp+IMG") no-repeat center center / cover;
+    border-radius: .3rem;
+    height: 20rem;
+}
+.row{
+    margin-bottom: 1rem;
+}
+.img-fluid{
+    padding: 0.5rem 0.5rem;
+}

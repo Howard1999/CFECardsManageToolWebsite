@@ -1,0 +1,17 @@
+extends ../../layout
+
+block load_css
+    link(rel="stylesheet", href="/stylesheets/account/google-oauth2/google-oauth2.css")
+
+block content
+
+    div.d-flex.justify-content-center
+        div.border.border-secondary.col-12.col-sm-9.col-md-7.col-lg-5.col-xl-4
+            div.row.text-center
+                h2 #{title}
+            div.row.d-flex.justify-content-center
+                div.col-12.text-center
+                    p.fs-5.text-break.btn-text 即將登出
+                    img.img-fluid(src="http://fakeimg.pl/350x350/00CED1/FFF/?text=temp+IMG")
+                    a.btn.btn-outline-dark.col-7(href="/account/google-oauth2/sign-out", role="button")
+                        p.fs-5.text-break.btn-text 登出

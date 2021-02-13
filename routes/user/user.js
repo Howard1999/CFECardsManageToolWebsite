@@ -3,11 +3,13 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/profile', function(req, res, next) {
-  if(req.session.signedIn){
-    res.render('userprofile', {title: '五行牌牌組管理器', userName: req.session.userName});
-  }else{
-    res.redirect('/');
-  }
+    var userName = req.session.userName
+    var signedIn = req.session.signedIn==true;
+    if(signedIn){
+        res.render('user/profile', {'title': '五行牌牌組管理器', 'signedIn': signedIn, 'userName': userName});
+    }else{
+        res.redirect('/');
+    }
 });
 
 module.exports = router;
