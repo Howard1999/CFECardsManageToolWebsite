@@ -15,7 +15,7 @@ html
 
   body
     // navigation bar
-    header.navbar.navbar-expand-lg.navbar-light.rounded.sticky-top.m-3.p-1#navbar
+    header.navbar.navbar-expand-lg.navbar-light.rounded.sticky-top.m-2.p-1#navbar
       nav.container-xxl(aria-label="Main navigation")
         a.navbar-brand.p-0.me-2(href="/")
           img.d-block.my-1.nav-icon(src="http://fakeimg.pl/75x75/00CED1/FFF/?text=LOGO")
@@ -51,7 +51,7 @@ html
     block content
 
     // copy right footer
-    div.container.p-1
+    div.container-fluid.p-1.fixed-bottom
       p.fs-6.m-0.text-break &copy; copyright by Howard-Su
 
     // load bootstrap js
