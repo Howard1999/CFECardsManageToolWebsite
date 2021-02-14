@@ -1,9 +1,9 @@
 .border{
-    padding: 1rem
+    padding: 1rem;
+    border: 5px solid #000;
 }
 
 .img-fluid{
-    padding: 15px;
     width: 350px;
 }
 
@@ -12,15 +12,8 @@
     border-radius: 50%;
 }
 
-.btn{
-    padding: 0.3rem;
-}
-
 .google-icon{
     width: 27px;
     height: 27px;
 }
 
-.btn-text{
-    margin-bottom: 0;
-}
