@@ -8,7 +8,7 @@ router.get('/profile', function(req, res, next) {
     if(signedIn){
         res.render('user/profile', {'title': '五行牌牌組管理器', 'signedIn': signedIn, 'userName': userName});
     }else{
-        res.redirect('/');
+        res.render('error/didnt_sign_in');
     }
 });
 

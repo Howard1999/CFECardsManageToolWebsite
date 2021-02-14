@@ -46,12 +46,7 @@ mongoose.connect(mongoDB,{useUnifiedTopology: true});
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-// error handler
-app.use((err, req, res, next)=>{
-    console.log(err);
-    res.status(500);
-    res.render('error');
-});
+
 // route setup
 app.use('/', indexRouter);
 app.use('/user', usersRouter);

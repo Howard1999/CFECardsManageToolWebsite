@@ -43,19 +43,16 @@ async function multiSignInPrevent(req, res, next) {
 }
 /* pages */
 authAPI.get('/sign-in-page', multiSignInPrevent, (req, res, next)=>{
-  var signedIn = req.session.signedIn==true;
   var url = getConnectionUrl(createConnection('sign-in'));
   var err = req.query.err;
-  res.render('account/google-oauth2/sign_in_page', {'title': '登入', 'signedIn': signedIn, 'auth_url': url, 'err': err});
+  res.render('account/google-oauth2/sign_in', {'title': '登入', 'signedIn': false, 'auth_url': url, 'err': err});
 });
 authAPI.get('/sign-up-page', multiSignInPrevent, (req, res, next)=>{
-  var signedIn = req.session.signedIn==true;
   var url = getConnectionUrl(createConnection('sign-up-page/confirm'));
   var err = req.query.err;
-  res.render('account/google-oauth2/sign_up_page', {'title': '註冊', 'signedIn': signedIn, 'auth_url': url, 'err': err});
+  res.render('account/google-oauth2/sign_up', {'title': '註冊', 'signedIn': false, 'auth_url': url, 'err': err});
 });
 authAPI.get('/sign-up-page/confirm', multiSignInPrevent, (req, res, next)=>{
-  var signedIn = req.session.signedIn==true;
   var code = req.query.code;
   const remoteIp = req.connection.remoteAddress;
   if(code===undefined){
@@ -65,10 +62,13 @@ authAPI.get('/sign-up-page/confirm', multiSignInPrevent, (req, res, next)=>{
     getGoogleAccount(code, 'sign-up-page/confirm')
       .then((data)=>{
         var gmail = data['email'];
-        var userName = data['name'];
-        var avatarUrl = data['picture'];
-        req.session.signUpConfig = {'name': userName,'email': gmail};
-        res.render("account/google-oauth2/sign_up_confirm_page", {'title': '註冊', 'signedIn': signedIn, 'name': userName, 'email': gmail, 'avatar_url': avatarUrl});
+        var name = data['name'];
+        var avatar = data['picture'];
+        var userData = {'name': name, 'email': gmail, 'avatar': avatar};
+        req.session.signUpConfig = {'name': name, 'email': gmail};
+        res.render("account/google-oauth2/sign_up_confirm", {'title': '註冊確認',
+                                                             'signedIn': false,
+                                                             'userData': userData});
       })
       .catch((err)=>{
         ServerLog.create({'recordBy': 'google-oauth2-sign-up',
@@ -81,22 +81,23 @@ authAPI.get('/sign-up-page/confirm', multiSignInPrevent, (req, res, next)=>{
 });
 authAPI.get('/sign-out-page', (req, res, next)=>{
   var signedIn = req.session.signedIn==true;
-  res.render('account/google-oauth2/sign_out_page', {'title': '登出',  'signedIn': signedIn});
+  if(!signedIn)res.render('error/didnt_sign_in');
+  else res.render('account/google-oauth2/sign_out', {'title': '登出',  'signedIn': true});
 });
 /* apis */
 authAPI.get('/sign-in', multiSignInPrevent, (req, res, next)=>{
   const code = req.query.code;
   const remoteIp = req.connection.remoteAddress;
   if(code===undefined){
-    res.redirect('/sign-in-page');
+    res.redirect('/account/google-oauth2/sign-in-page');
   }
   else{
     getGoogleAccount(code, 'sign-in')
       .then((data)=>{
         var gmail = data['email'];
-        var userName = data['name'];
+        var avatar = data['picture'];
         // check user exsist
-        User.findOne({'email':gmail}, (err, user)=>{
+        User.findOne({'email': gmail}, (err, user)=>{
           if(err){
             // redirect to sign in page
             ServerLog.create({'recordBy': 'google-oauth2-sign-in',
@@ -109,8 +110,9 @@ authAPI.get('/sign-in', multiSignInPrevent, (req, res, next)=>{
             if(user){
               // success sign-in
               req.session.signedIn = true;
-              req.session.email = gmail;
-              req.session.userName = userName;
+              req.session.userData = {'name': user.name,
+                                      'email': gmail,
+                                      'avatar': avatar};
               ServerLog.create({'recordBy': 'google-oauth2-sign-in',
                                 'type': 'sign in-success',
                                 'requestIP': remoteIp,
@@ -122,7 +124,7 @@ authAPI.get('/sign-in', multiSignInPrevent, (req, res, next)=>{
                                 'type': 'sign in-user not exsist',
                                 'requestIP': remoteIp,
                                 'content': gmail});
-              res.redirect("/account/google-oauth2/sign-in-page?err=USER_DOES_NOT_EXSIST"); // user not exsist
+              res.render('error/user_not_exsist'); // user not exsist
             }
           }
         });
@@ -141,6 +143,7 @@ authAPI.get('/sign-up', multiSignInPrevent, (req, res, next)=>{
   var confirm = req.query.confirm;
   var remoteIp = req.connection.remoteAddress;
   var signUpConfig = req.session.signUpConfig;
+  req.session.signUpConfig = undefined;
 
   if(confirm=='true'){
     // check signUpConfig exsist
@@ -148,10 +151,8 @@ authAPI.get('/sign-up', multiSignInPrevent, (req, res, next)=>{
       res.redirect('/account/google-oauth2/sign-up-page');
     }
     else{
-      var userName = signUpConfig['name'];
+      var name = signUpConfig['name'];
       var gmail = signUpConfig['email'];
-
-      req.session.signUpConfig = undefined;
       // check user doesn't exsist
       User.findOne({'email':gmail}, (err, user)=>{
           if(err){
@@ -167,26 +168,23 @@ authAPI.get('/sign-up', multiSignInPrevent, (req, res, next)=>{
                                 'type': 'sign up-user exsist',
                                 'requestIP': remoteIp,
                                 'content': gmail});
-              res.redirect('/account/google-oauth2/sign-up-page?err=USER_EXSIST');
+              res.render('error/gmail_already_regist');
             }
             else{
               // create user
-              User.create({'account_type': 'gmail',
-                         'name': userName,
-                         'email': gmail,
-                         'cardSets': []});
+              User.create({'name': name,
+                           'email': gmail});
               ServerLog.create({'recordBy': 'google-oauth2-sign-up',
                                 'type': 'sign up-success',
                                 'requestIP': remoteIp,
                                 'content': gmail});
-              res.redirect('/account/google-oauth2/sign-in-page');
+              res.render('account/google-oauth2/sign-up-success');
             }
           }
         });
     }
   }
   else{
-    req.session.signUpConfig = undefined;
     res.redirect('/account/google-oauth2/sign-up-page');
   }
 });
@@ -199,8 +197,7 @@ authAPI.get('/sign-out', (req, res, next)=>{
                     'content': gmail});
 
   req.session.signedIn = undefined;
-  req.session.email = undefined;
-  req.session.userName = undefined;
+  req.session.userData = undefined;
   res.redirect('/');
 });
 

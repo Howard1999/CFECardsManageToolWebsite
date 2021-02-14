@@ -15,8 +15,8 @@ html
 
   body
     // navigation bar
-    header.navbar.navbar-expand-lg.navbar-light.rounded.sticky-top.m-2.p-1#navbar
-      nav.container-xxl(aria-label="Main navigation")
+    header.navbar.navbar-expand-lg.navbar-light.rounded.sticky-top.m-2.p-0#navbar
+      nav.container-xxl.p-2(aria-label="Main navigation")
         a.navbar-brand.p-0.me-2(href="/")
           img.d-block.my-1.nav-icon(src="http://fakeimg.pl/75x75/00CED1/FFF/?text=LOGO")
         button.navbar-toggler.collapsed(type="button",
@@ -29,29 +29,29 @@ html
         div.collapse.navbar-collapse#navbarNavAltMarkup
           ul.navbar-nav.flex-row.flex-wrap.bd-navbar-nav.pt-2.py-md-0
             li.nav-item.col-6.col-md-auto
-              a.nav-link.p-2.active(href="/") 首頁
+              a.nav-link.p-2(href="/") 首頁
             li.nav-item.col-6.col-md-auto
-              a.nav-link.p-2.active(href="/user/profile") 使用者
+              a.nav-link.p-2(href="/user/profile") 使用者
             li.nav-item.col-6.col-md-auto
-              a.nav-link.p-2.active(href="/cardset/edit") 編輯卡組
+              a.nav-link.p-2(href="/cardset/edit") 編輯卡組
             li.nav-item.col-6.col-md-auto
-              a.nav-link.p-2.active(href="/#about") 聯絡
+              a.nav-link.p-2(href="/#about") 聯絡
           hr.d-md-none.text-black-50
           ul.navbar-nav.flex-row.flex-wrap.ms-md-auto
             -if(!signedIn){
               li.nav-item.col-6.col-md-auto
-                a.nav-link.p-2.active(href="/account/google-oauth2/sign-in-page") 登入
+                a.nav-link.p-2(href="/account/google-oauth2/sign-in-page") 登入
               li.nav-item.col-6.col-md-auto
-                a.nav-link.p-2.active(href="/account/google-oauth2/sign-up-page") 註冊
+                a.nav-link.p-2(href="/account/google-oauth2/sign-up-page") 註冊
             -}else{
-              li.nav-item.col-6.col-md-auto
-                a.nav-link.p-2.active(href="/account/google-oauth2/sign-out-page") 登出
+              li.nav-item.col-6.col-md-auto.d-flex
+                a.nav-link.p-2(href="/account/google-oauth2/sign-out-page") 登出
             -}
     // content
     block content
 
     // copy right footer
-    div.container-fluid.p-1.fixed-bottom
+    div.p-1.fixed-bottom
       p.fs-6.m-0.text-break &copy; copyright by Howard-Su
 
     // load bootstrap js

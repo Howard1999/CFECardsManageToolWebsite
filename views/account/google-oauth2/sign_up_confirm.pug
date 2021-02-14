@@ -9,16 +9,16 @@ block content
             h2.text-break #{title}
         div.row.justify-content-center.text-center
             p.fs-5.text-break 要使用這個帳號註冊嗎
-            img.img-fluid.avatar(src=avatar_url)
-            p.fs-5.text-break #{name}
-            p.fs-5.text-break #{email}
+            img.img-fluid.avatar(src=userData['avatar'])
+            p.fs-5.text-break #{userData['name']}
+            p.fs-5.text-break #{userData['email']}
         div.row.justify-content-center.text-center-p-2
             div.col-12.col-md-9.col-lg-6
-                div.row.justify-content-around.text-center
+                div.row.justify-content-center.text-center
                     div.col-6.col-sm-4
-                        a.btn.btn-outline-dark(href='/account/google-oauth2/sign-up?confirm=true', role="button")
+                        a.btn.btn-outline-dark.w-100(href='/account/google-oauth2/sign-up?confirm=true', role="button")
                             p.fs-5.text-break.m-0 確認
                     div.col-6.col-sm-4
-                        a.btn.btn-outline-dark(href='/account/google-oauth2/sign-up?confirm=false', role="button")
+                        a.btn.btn-outline-dark.w-100(href='/account/google-oauth2/sign-up?confirm=false', role="button")
                             p.fs-5.text-break.m-0 取消
                         
