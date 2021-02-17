@@ -41,25 +41,39 @@ function getUser(id){
     });
 }
 
-function useInviteCode(code){
+// function below support transaction
+function useInviteCode(code, session){
     // error -> reject('DB_ERROR')
     // code not exsist -> reject('INVITE_CODE_NOT_EXSIST')
     // exsist and delete success -> resolve()
     return new Promise((resolve, reject)=>{
-        InviteCode.findOneAndDelete({code}, (err, code)=>{
+        var callback = (err, code)=>{
             if(err)reject('DB_ERROR');
             else{
                 if(code)resolve();
                 else reject('INVITE_CODE_NOT_EXSIST');
             }
-        });
+        };
+        if(session!=undefined){
+            InviteCode.findOneAndDelete({code}, {session: session}, callback);
+        }
+        else{
+            InviteCode.findOneAndDelete({code}, callback);
+        }
     });
 }
 
-function createAccount(id, gmail, name){
+function createAccount(id, gmail, name, session){
     // error -> reject('DB_ERROR');
     // create success -> resolve()
-    var promise = User.create({_id: id, name: name, gmail: gmail});
+    var promise;
+    if(session!=undefined){
+        promise = User.create({_id: id, name: name, gmail: gmail}, 
+            {session: session});}
+    else{
+        promise =  User.create({_id: id, name: name, gmail: gmail});
+    }
+
     return promise.then(
     val=>{
         return;
@@ -112,12 +126,12 @@ authApis.post('/sign-up', (req, res, next)=>{
     }).then(data=>{
         id = data['id'];
         gmail = data['gmail'];
-        return getUser(id);
+        return getUser(id, session);
     }).then(user=>{
         if(user){throw 'ACCOUNT_USED';}
-        else return useInviteCode(inviteCode);
+        else return useInviteCode(inviteCode, session);
     }).then(()=>{;
-        return createAccount(id, gmail, name)
+        return createAccount(id, gmail, name, session);
     }).then(async()=>{
             await session.commitTransaction();
             res.json({status: 'success'});
