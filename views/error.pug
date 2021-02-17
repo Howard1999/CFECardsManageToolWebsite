@@ -1,6 +1,5 @@
-extends layout
+doctype html
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+html
+    h1= error.status+' '+message
+    //pre #{error.stack}

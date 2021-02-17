@@ -1,19 +1,45 @@
 extends ../../layout
 
-block load_css
+block title
+    title 登入
+
+block meta
+    meta(name='google-signin-client_id', content=CLIENT_ID)
+
+block css
     link(rel="stylesheet", href="/stylesheets/account/google-oauth2/google-oauth2.css")
 
 block content
-    -if(err!=undefined)
-        script alert("#{err}");
-    div.container-xxl
-        div.row.justify-content-center.text-center
-            h2.text-break #{title}
+    .container-xxl
+        .row.justify-content-center.text-center
+            p.fs-2 登入
             p.fs-5.text-break 目前只提供Google帳戶登入
-        div.row.justify-content-center.text-center
-            div.col-12.col-lg-6
-                img.img-fluid.p-2(src="http://fakeimg.pl/1000x1000/00CED1/FFF/?text=temp+IMG")
-        div.row.justify-content-center.text-center.p-2
-            a.btn.btn-outline-dark.d-flex.justify-content-evenly(href=auth_url, role="button", style="width:300px;")
-                img.google-icon(alt="",src="/images/google_logo.webp")
-                p.fs-5.text-break.m-0 使用 Google 登入
+            img.img-fluid.mb-3(src="http://fakeimg.pl/1000x1000/00CED1/FFF/?text=temp+IMG")
+            .d-flex.justify-content-center
+                #g-signin2
+
+    #alertModal.modal.fade(tabindex='-1' aria-labelledby='alertModalTitle' aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5#alertModalTitle.modal-title 錯誤
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body#alertText
+                .modal-footer.justify-content-center
+                    button.btn.btn-primary(type='button' data-bs-dismiss='modal') 確定
+
+    #requestSignUpModal.modal.fade(tabindex='-1' aria-labelledby='requestSignUpModalTitle' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h5#requestSignUpModalTitle.modal-title 尚未註冊
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    | 這個帳號尚未註冊，要前往註冊嗎?
+                .modal-footer.justify-content-center
+                    button.btn.btn-primary(type='button', onclick='gotoSignUp()') 確定
+                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 取消
+
+block js
+    script(src='https://apis.google.com/js/platform.js', async, defer)
+    script(src='/javascripts/account/google-oauth2/sign_in.js')

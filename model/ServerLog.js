@@ -1,3 +1,6 @@
+/*
+  Temparary not use
+*/
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -7,14 +10,10 @@ var ServerLog = new Schema({
             enum:['normal','error',
 
                   'sign in-success',
-                  'sign in-user not exsist',
                   'sign in-error',
                   
                   'sign up-success',
-                  'sign up-user exsist',
                   'sign up-error',
-
-                  'sign out',
 
                   'DB error', 'Google OAuth2 error']},
     requestIP: {type: String, default: 'Null'},

@@ -2,7 +2,10 @@ var express = require('express');
 var account = express.Router();
 
 // bind google oauth module
-var googleOAuth2 = require('./google-oauth2/google-oauth2');
-account.use('/google-oauth2', googleOAuth2);
+var pages = require('./google-oauth2/pages');
+var apis = require('./google-oauth2/apis');
+
+account.use('/google-oauth2', pages);
+account.use('/google-oauth2', apis);
 
 module.exports = account;
