@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 var User = require('../../../model/User');
 var InviteCode = require('../../../model/InviteCode');
 
-const secrets = JSON.parse(fs.readFileSync('./routes/account/google-oauth2/secret/secrets.json'));
+const secrets = JSON.parse(fs.readFileSync('./secrets.json'));
 const CLIENT_ID = secrets.client_id;
 const jwtSignSecret = secrets.jwt_sign_secret;
 const client = new OAuth2Client(CLIENT_ID);
@@ -48,14 +48,14 @@ function useInviteCode(code, session){
     // exsist and delete success -> resolve()
     return new Promise((resolve, reject)=>{
         var callback = (err, code)=>{
-            if(err)reject('DB_ERROR');
+            if(err){reject('DB_ERROR');}
             else{
                 if(code)resolve();
                 else reject('INVITE_CODE_NOT_EXSIST');
             }
         };
         if(session!=undefined){
-            InviteCode.findOneAndDelete({code}, {session: session}, callback);
+            InviteCode.findOneAndDelete({code}, {session}, callback);
         }
         else{
             InviteCode.findOneAndDelete({code}, callback);
@@ -68,8 +68,8 @@ function createAccount(id, gmail, name, session){
     // create success -> resolve()
     var promise;
     if(session!=undefined){
-        promise = User.create({_id: id, name: name, gmail: gmail}, 
-            {session: session});}
+        promise = User.create([{_id: id, name: name, gmail: gmail}],
+            {session});}
     else{
         promise =  User.create({_id: id, name: name, gmail: gmail});
     }
@@ -86,11 +86,19 @@ function createAccount(id, gmail, name, session){
 var authApis = express.Router();
 
 authApis.post('/sign-in', middleware.mustSignOut, (req, res, next)=>{
+    // recieve:
+    //   {token(from google)}
+    // response:
+    //   {status, type, authToken(temparary save in browser cookie)}
+    //   status: [success/error]
+    //   type: the reason of error
+    //         [DB_ERROR / TOKEN_VERIFY_ERROR / ALREADY_SIGN_IN / USER_NOT_EXSIST]
+    //   authToken: jwt token, record id, name and type of signed in user
     var token = req.body.token;
     verify(token, CLIENT_ID)
     .then(data=>{
         id = data['id'];
-        return getUser(id);
+        return getUser(id); // check user
     }).then(user=>{
         if(user){
             // genarate token
@@ -112,6 +120,14 @@ authApis.post('/sign-in', middleware.mustSignOut, (req, res, next)=>{
 });
 
 authApis.post('/sign-up', (req, res, next)=>{
+    // recieve:
+    //   *Notice* string length check by model schema
+    //   {token(from google), name, inviteCode}
+    // response:
+    //   {status, type}
+    //   status: [success/error]
+    //   type: the reason of error
+    //         [DB_ERROR / TOKEN_VERIFY_ERROR / ACCOUNT_USED / INVITE_CODE_NOT_EXSIST]
     var token = req.body.token;
     var name = req.body.name;
     var inviteCode = req.body.inviteCode;
@@ -122,23 +138,24 @@ authApis.post('/sign-up', (req, res, next)=>{
     .then(s=>{
         session = s;
         session.startTransaction();
-        return verify(token, CLIENT_ID);
+        return verify(token, CLIENT_ID); // verify token
     }).then(data=>{
         id = data['id'];
         gmail = data['gmail'];
-        return getUser(id, session);
-    }).then(user=>{
+        return getUser(id, session); // check user
+    }).then(user=>{ 
         if(user){throw 'ACCOUNT_USED';}
-        else return useInviteCode(inviteCode, session);
-    }).then(()=>{;
-        return createAccount(id, gmail, name, session);
+        else return useInviteCode(inviteCode, session); // use invite code
+    }).then(()=>{
+        return createAccount(id, gmail, name, session); // create account
     }).then(async()=>{
-            await session.commitTransaction();
+            await session.commitTransaction(); // commit
             res.json({status: 'success'});
         },async err_string=>{
-            await session.abortTransaction();
+            await session.abortTransaction(); // abort
             res.json({status: 'error', type: err_string});
-    }).then(()=>{session.endSession();})
+    }).then(()=>{session.endSession();}, // finish
+            ()=>{session.endSession();}); // temparory ignore commit/abort failed situation
 });
 
 authApis.post('/sign-out', middleware.mustSignIn, (req, res, next)=>{

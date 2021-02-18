@@ -2,7 +2,7 @@ var fs = require('fs');
 var jwt = require('jsonwebtoken');
 var User = require('../../../model/User');
 
-const secrets = JSON.parse(fs.readFileSync('./routes/account/google-oauth2/secret/secrets.json'));
+const secrets = JSON.parse(fs.readFileSync('./secrets.json'));
 const jwtSignSecret = secrets.jwt_sign_secret;
 
 function verifyToken(req){

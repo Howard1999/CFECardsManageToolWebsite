@@ -1,7 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 
-const secrets = JSON.parse(fs.readFileSync('./routes/account/google-oauth2/secret/secrets.json'));
+const secrets = JSON.parse(fs.readFileSync('./secrets.json'));
 const CLIENT_ID = secrets.client_id;
 
 var authPages = express.Router();

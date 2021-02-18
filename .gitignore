@@ -1,2 +1,2 @@
 node_modules
-routes/account/google-oauth2/secret
+secrets.json

@@ -7,6 +7,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 var logger = require('morgan');
+var fs = require('fs');
 
 var authMiddleware = require('./routes/account/google-oauth2/middleware');
 
@@ -27,8 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* load secret for cookie and session here*/
-var secrets = {cookieSecret: 'temp', sessionSecret: 'temp'};
+/* load secrets */
+const secrets = JSON.parse(fs.readFileSync('./secrets.json'));
+var db_usr_pwd = secrets.dbSecret.usr+':'+secrets.dbSecret.pwd
 
 // cookie setup
 app.use(cookieParser(secrets.cookieSecret));
@@ -38,7 +40,7 @@ app.use(session({
     name: 'skey',
     secret: secrets.sessionSecret,
     saveUninitialized: false,
-    store: new MongoStore({url:"mongodb://localhost:27017/session"}),
+    store: new MongoStore({url:"mongodb://"+db_usr_pwd+"@localhost:27017/CFECardsManageToolDatabase"}),
     resave: true,
     rolling:true,
     cookie: {
@@ -46,7 +48,7 @@ app.use(session({
     }
 }));
 // mongoose setup
-var mongoDB = 'mongodb://localhost:27017/CFECardsManageToolDatabase';
+var mongoDB = 'mongodb://'+db_usr_pwd+'@localhost:27017/CFECardsManageToolDatabase';
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
