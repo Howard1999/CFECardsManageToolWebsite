@@ -43,12 +43,12 @@ block content
                         hr
                         .mb-3
                             label.col-form-label(for='recipient-name') 暱稱:
-                            input#name.form-control(type='text' maxlength="10")
+                            input#name.form-control(type='text' maxlength="10" onkeyup="nameCheck()")
                         .mb-3
                             label.col-form-label(for='recipient-name') 註冊邀請碼:
                             input#inviteCode.form-control(type='text' maxlength="11")
                 .modal-footer.justify-content-center
-                    button.btn.btn-primary#postButton(type='button' data-bs-dismiss='modal' onclick='signUp();') 確定
+                    button.btn.btn-primary#postButton(type='button' data-bs-dismiss='modal' onclick='signUp()') 確定
                     button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 取消
 
     #successModal.modal.fade(tabindex='-1' aria-labelledby='successModalTitle' aria-hidden='true')

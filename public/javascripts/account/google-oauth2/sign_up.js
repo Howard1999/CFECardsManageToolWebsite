@@ -8,7 +8,33 @@ window.onload=()=>{
         'onsuccess': onSignIn,
         'onfailure': onFailure
     });
+    popover = new bootstrap.Popover($('#name').get(0),
+        {container:'body', content:'最少兩個字', trigger:'manual'});
+    $('#signUpCheckModal').get(0).addEventListener('shown.bs.modal', (event)=>{
+        nameCheck();
+    });
+    $('#signUpCheckModal').get(0).addEventListener('hide.bs.modal', (event)=>{
+        popover.hide();
+        $('#postButton').attr('disabled', false);
+    });
 }
+
+var popover;
+function nameCheck(){
+    var postButton = $('#postButton');
+    var name = $('#name');
+    var strlen = name.val().length;
+
+    if(strlen<2){
+        postButton.attr('disabled', true);
+        popover.show();
+    }
+    else {
+        postButton.attr('disabled', false);
+        popover.hide();
+    }
+}
+
 var id_token;
 function onSignIn(googleUser) {
     id_token = googleUser.getAuthResponse().id_token;
@@ -27,7 +53,7 @@ function onSignIn(googleUser) {
 function signUp(){
     var name = $('#name').val();
     var inviteCode = $('#inviteCode').val();
-
+    if(name.length<=10&&inviteCode.length<=11)
     $.post('/account/google-oauth2/sign-up',
         {'token': id_token, 'name': name, 'inviteCode': inviteCode},
         (retData, status)=>{
