@@ -1,19 +1,8 @@
-.border{
-    padding: 1rem;
-    border: 5px solid #000;
-}
-
 .img-fluid{
     width: 350px;
 }
 
 .avatar{
-    width: 200px;
+    width: 100px;
     border-radius: 50%;
 }
-
-.google-icon{
-    width: 27px;
-    height: 27px;
-}
-
