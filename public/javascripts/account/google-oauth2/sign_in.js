@@ -20,7 +20,7 @@ function onSignIn(googleUser) {
         (retData, status)=>{
             if(status=='success'){ // request status
                 if(retData.status=='success'){
-                    window.location.href = '/';
+                    window.location.replace('/');
                 }
                 else{
                     if(retData.type=='DB_ERROR'){

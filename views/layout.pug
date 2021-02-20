@@ -9,6 +9,7 @@ html
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css',rel='stylesheet',integrity='sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl',crossorigin='anonymous')
     link(rel="stylesheet", href="/stylesheets/layout.css")
     block css
+    block others
 
   body
     // navigation bar
@@ -28,7 +29,11 @@ html
             li.nav-item.col-6.col-md-auto
               a.nav-link.p-2(href="/") 首頁
             li.nav-item.col-6.col-md-auto
-              a.nav-link.p-2(href="/user/profile") 使用者
+              -if(signedIn){
+                a.nav-link.p-2(href="/user/profile") 使用者
+              -}else{
+                  a.nav-link.disabled.p-2(href="/user/profile") 使用者
+              -}
             li.nav-item.col-6.col-md-auto
               a.nav-link.p-2(href="/cardset/edit") 編輯卡組
             li.nav-item.col-6.col-md-auto

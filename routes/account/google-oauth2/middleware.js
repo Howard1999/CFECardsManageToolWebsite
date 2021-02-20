@@ -26,6 +26,7 @@ function signInStatus(req, res, next){
         req.account.payload = payload;
     }else{
         req.account.signedIn = false;
+        req.account.payload = undefined;
     }
     
     next();
@@ -38,7 +39,7 @@ function mustSignOut(req, res, next){
 
 function mustSignIn(req, res, next){
     if(req.account.signedIn)next();
-    else res.status(401).json({status: 'error', type: 'DID_NOT_SIGN_IN'});
+    else res.status(409).json({status: 'error', type: 'DID_NOT_SIGN_IN'});
 }
 
 module.exports = {

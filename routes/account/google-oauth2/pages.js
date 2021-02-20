@@ -7,16 +7,18 @@ const CLIENT_ID = secrets.client_id;
 var authPages = express.Router();
 
 authPages.get('/sign-in', (req, res, next)=>{
-    res.render('account/google-oauth2/sign_in', {'signedIn': false, 'CLIENT_ID': CLIENT_ID});
+    if (req.account.signedIn) {res.redirect('/');}
+    else{res.render('account/google-oauth2/sign_in', {'CLIENT_ID': CLIENT_ID});}
 });
 
 authPages.get('/sign-up', (req, res, next)=>{
-    var signedIn = req.account.signedIn;
-    res.render('account/google-oauth2/sign_up', {'signedIn': signedIn, 'CLIENT_ID': CLIENT_ID});
+    if (req.account.signedIn) {res.redirect('/');}
+    else {res.render('account/google-oauth2/sign_up', {'CLIENT_ID': CLIENT_ID});}
 });
 
 authPages.get('/sign-out', (req, res, next)=>{
-    res.render('account/google-oauth2/sign_out', {'signedIn': true});
+    if (!req.account.signedIn) {res.redirect('/');}
+    else{res.render('account/google-oauth2/sign_out', {});}
 });
 
 module.exports = authPages;

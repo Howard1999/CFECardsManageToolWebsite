@@ -119,7 +119,7 @@ authApis.post('/sign-in', middleware.mustSignOut, (req, res, next)=>{
     });
 });
 
-authApis.post('/sign-up', (req, res, next)=>{
+authApis.post('/sign-up', middleware.mustSignOut, (req, res, next)=>{
     // recieve:
     //   *Notice* string length check by model schema
     //   {token(from google), name, inviteCode}
